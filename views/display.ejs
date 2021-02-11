@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <title>Memes</title>
+    <style>
+        .form-fill {
+            background-color: aqua;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="text-center bg-dark text-light ">Xmeme</h1>
+    <div class="container bg-secondary">
+        <br>
+        <br>
+        <center>
+            <% if(data.length==0){ %>
+                <h2 class="text-white">No Meme Posted Yet!!</h2>
+                <% } %>
+            <% data.forEach(function(d){ %>
+                <div class="card" style="width: 18rem;border: 1px solid black;">
+                    <div class="card-body">
+                        <h5 class="card-title text-start">
+                            <%= d.name %>
+                        </h5>
+                        <p class="card-text text-start">
+                            <%= d.caption %>
+                        </p>
+                        <img src="<%= d.url %>" class="img-responsive" style="width:15rem;">                        
+                    </div>
+                </div>
+                <br>
+                <% }); %>
+        </center> 
+        <br>
+    </div>
+    <% data.forEach(function(d){ %>
+    <div class="form-fill">
+        <br>
+        <div class="container">
+            <form action="/memes/<%= d._id %>?_method=PATCH" method="POST">
+                <div class="mb-3">
+                    <label for="exampleFormControlInput2" class="form-label">Caption</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput2" name="caption"
+                        placeholder="<%= d.caption %>" value="<%= d.caption %>" >
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleFormControlInput3" class="form-label">Image URL</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput3" name="url"
+                        placeholder="<%= d.url %>" value="<%= d.url %>">
+                </div>
+
+                <input type="submit" value="Edit" class="btn btn-success">
+            </form>
+        </div>
+    </div>
+    <% }); %>
+    <script type="text/javascripts" src="javascripts/scripts.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"
+        integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js"
+        integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
