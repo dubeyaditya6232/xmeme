@@ -28,7 +28,7 @@ db.on('connected',()=>{
   console.log('Connected to dataBase');
 })
 db.on('error',()=>{
-  console.log('database Connection Error :'+err);
+  console.log('database Connection Error :');
 })
 // database connection done
 
