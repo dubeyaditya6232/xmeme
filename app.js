@@ -1,3 +1,4 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -18,7 +19,7 @@ app.use(methodOverride('_method'));
 mongoose.set('useFindAndModify', false);
 
 //Connecting to database
-mongoDB_URL="mongodb://127.0.0.1/xmeme"
+mongoDB_URL=`mongodb+srv://adi2308:${process.env.DBpass}@cluster0.tfgae.mongodb.net/<Xmeme>?retryWrites=true&w=majority`;
 mongoose.connect(mongoDB_URL,{ useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise=global.Promise;
 db=mongoose.connection;
