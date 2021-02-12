@@ -19,7 +19,7 @@ app.use(methodOverride('_method'));
 mongoose.set('useFindAndModify', false);
 
 //Connecting to database
-mongoDB_URL=`mongodb+srv://adi2308:${process.env.DBpass}@cluster0.tfgae.mongodb.net/<Xmeme>?retryWrites=true&w=majority`;
+mongoDB_URL=`mongodb+srv://adi2308:${process.env.DBpass}@cluster0.tfgae.mongodb.net/Xmeme?retryWrites=true&w=majority`;
 mongoose.connect(mongoDB_URL,{ useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise=global.Promise;
 db=mongoose.connection;

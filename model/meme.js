@@ -5,7 +5,7 @@ const autoIncrement=require('mongoose-auto-increment');
 
 mongoose.set('useCreateIndex', true);
 
-var connection = mongoose.createConnection(`mongodb+srv://adi2308:${process.env.DBpass}@cluster0.tfgae.mongodb.net/<Xmeme>?retryWrites=true&w=majority`);
+var connection = mongoose.createConnection(`mongodb+srv://adi2308:${process.env.DBpass}@cluster0.tfgae.mongodb.net/Xmeme?retryWrites=true&w=majority`);
 autoIncrement.initialize(connection);
 const memeSchema=new schema({
     name:{
