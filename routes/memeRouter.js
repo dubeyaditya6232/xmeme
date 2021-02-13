@@ -35,7 +35,7 @@ router.post('/', (req, res, next) => {  // handles the post request upon the end
                     console.log(err);
                 } else {
                     res.statusCode=200;
-                    res.render('index', { message: "Meme posted Successfully" });
+                    res.render('memes', { message: "Meme posted Successfully" });
                 }
             });
         }
@@ -68,7 +68,7 @@ router.patch('/:memeId',(req,res,next)=>{ //handles the PATCH request on the end
         }
         else{
             res.statusCode=200; 
-            res.render('index',{message:'Modified the Meme Successfully'});
+            res.render('memes',{message:'Modified the Meme Successfully'});
         }
     });
 });
