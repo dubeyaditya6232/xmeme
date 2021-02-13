@@ -3,7 +3,8 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { message: '' });
+  res.redirect('/memes');
+  //res.render('index', { message: '' });
 });
 
 module.exports = router;

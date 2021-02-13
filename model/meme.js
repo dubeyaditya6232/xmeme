@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { NotExtended } = require('http-errors');
 const mongoose=require('mongoose');
 const schema=mongoose.Schema;
 const autoIncrement=require('mongoose-auto-increment');
@@ -21,10 +22,5 @@ const memeSchema=new schema({
         //required:true
     }
 });
-
-memeSchema.path('url').validate((val)=>{
-    urlRegex = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
-    return urlRegex.test(val);
-},'Invalid URL');
 memeSchema.plugin(autoIncrement.plugin,'meme');
 module.exports = new mongoose.model('meme', memeSchema);

@@ -15,7 +15,7 @@
     </style>
 </head>
 
-<body>
+<body style="background-color: aqua;">
     <h1 class="text-center bg-dark text-light ">Xmeme</h1>
     
     <div class="form-fill">
@@ -23,37 +23,40 @@
         <div class="container">
             <form action="/memes" method="POST">
                 <div class="mb-3">
-                    <label for="exampleFormControlInput1" class="form-label">Name</label>
+                    <label for="exampleFormControlInput1" class="form-label">Name<span style="color: red;">*</span></label>
                     <input type="text" class="form-control" id="exampleFormControlInput1" name="name"
                         placeholder="Enter Your Name" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="exampleFormControlInput2" class="form-label">Caption</label>
+                    <label for="exampleFormControlInput2" class="form-label">Caption<span style="color: red;">*</span></label>
                     <input type="text" class="form-control" id="exampleFormControlInput2" name="caption"
                         placeholder="Enter Caption" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="exampleFormControlInput3" class="form-label">Image URL</label>
-                    <input type="text" class="form-control" id="exampleFormControlInput3" name="url"
+                    <label for="exampleFormControlInput3" class="form-label">Image URL<span style="color: red;">*</span></label>
+                    <input type="url" class="form-control" id="exampleFormControlInput3" name="url"
                         placeholder="Enter image URL" required>
                 </div>
 
                 <input type="submit" value="Post" class="btn btn-success">
+                <p class="f-1"><span style="color: red;">*</span><i>All fields are mandatory</i></p>
             </form>
         </div>
         <br>
     </div>
-    <div class="container bg-secondary">
+    <div class="container bg-dark">
         <br>
         <br>
         <center>
+            <h1 style="color: dodgerblue;">MEME COLLECTION</h1>
+            <br>
             <% if(data.length==0){ %>
                 <h2 class="text-white">No Meme Posted Yet!!</h2>
                 <% } %>
             <% data.forEach(function(d){ %>
-                <div class="card" style="width: 18rem;border: 1px solid black;">
+                <div class="card" style="width: 18rem;border: 2px solid red; background-color: darkmagenta;color:black">
                     <div class="card-body">
                         <h5 class="card-title text-start">
                             <%= d.name %>
