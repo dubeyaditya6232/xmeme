@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var memes = require('../model/meme') 
+const authenticate=require('../middleware/authenticate')
 
 var d = [];
-router.get('/', (req, res, next) => {  //handles the page when /memes endpoint is called
+router.get('/',authenticate.verifyUser, (req, res, next) => {  //handles the page when /memes endpoint is called
     memes.find({}).sort({ _id: -1 }).limit(100).exec((err, data) => { //sorting the data in descending order with limit of 100 data
         if (err) {
             console.log(err);
@@ -14,7 +15,7 @@ router.get('/', (req, res, next) => {  //handles the page when /memes endpoint i
         }
     })
 });
-router.post('/', (req, res, next) => {  // handles the post request upon the endpoint /memes
+router.post('/',authenticate.verifyUser, (req, res, next) => {  // handles the post request upon the endpoint /memes
     const { name, caption, url } = req.body;
     const newMemes = new memes({ //creating new meme
         name,
@@ -42,7 +43,7 @@ router.post('/', (req, res, next) => {  // handles the post request upon the end
     },(err)=>next(err))
     .catch((err)=>next(err));
 });
-router.get('/:memeId', (req, res, next) => { // handles the get request on /meme/<id> endpoint
+router.get('/:memeId',authenticate.verifyUser, (req, res, next) => { // handles the get request on /meme/<id> endpoint
     memes.findById(req.params.memeId) // finding meme by the ID passses in parameters
         .then((data) => {
             if(data!==null)
@@ -60,7 +61,7 @@ router.get('/:memeId', (req, res, next) => { // handles the get request on /meme
         },(err)=>next(err))
         .catch((err)=>next(err));
 });
-router.patch('/:memeId',(req,res,next)=>{ //handles the PATCH request on the endpoint /memes/<id>
+router.patch('/:memeId',authenticate.verifyUser,(req,res,next)=>{ //handles the PATCH request on the endpoint /memes/<id>
     const { caption , url }=req.body;
     memes.findByIdAndUpdate(req.params.memeId,{$set:{caption,url}},(err,updatedData)=>{ // find the meme by its unique ID and updates it
         if(err){
