@@ -27,4 +27,25 @@ router.post('/login',async (req, res, next)=> {
   }
 });
 
+router.post('/register',async (req, res, next)=> {
+  try{
+    let {email,name,password}= req.body;
+    const user= await Users.findOne({email});
+
+    if(user){
+      res.statusCode=409;
+      return res.json({message:"User already exists",data:null});
+    }
+    else{
+      const newUser = new Users({name,email,password})
+      const data = await newUser.save();
+      res.statusCode= 200;
+      return res.json({message:"Success! User added!",data});
+    }
+  }
+  catch(err){
+    return res.json({message:err.message,data:null});
+  }
+});
+
 module.exports = router;
