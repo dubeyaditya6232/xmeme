@@ -10,7 +10,7 @@ var methodOverride = require('method-override')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var memeRouter = require('./routes/memeRouter');
+var memeRouter = require('./routes/memes');
 
 var app = express();
 
