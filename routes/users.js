@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const Users=require('../model/users');
 /* GET users listing. */
@@ -39,7 +40,9 @@ router.post('/register',async (req, res, next)=> {
       return res.json({message:"User already exists",data:null});
     }
     else{
-      const newUser = new Users({name,email,password})
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      const newUser = new Users({name,email,password: hashedPassword})
       const data = await newUser.save();
       res.statusCode= 200;
       return res.json({message:"Success! User added!",data});
