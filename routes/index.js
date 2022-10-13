@@ -1,10 +1,7 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-
+const { homepage } = require("../controllers/routes");
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.redirect('/memes');
-  //res.render('index', { message: '' });
-});
+router.get("/", homepage);
 
 module.exports = router;
