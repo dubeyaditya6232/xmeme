@@ -1,53 +1,13 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-const jwt = require('jsonwebtoken')
-const Users=require('../model/users');
+const jwt = require("jsonwebtoken");
+const Users = require("../model/users");
+const { getUsers, login, register } = require("../controllers/routes");
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+router.get("/", getUsers);
 
-router.post('/login',async (req, res, next)=> {
-  try{
-    let {email,password}= req.body;
-    const user= await Users.findOne({email});
-    if(!user){
-      res.statusCode=404;
-      return res.json({message:"User not Found",data:null});
-    }
+router.post("/login", login);
 
-    if(user.password!==password){
-      res.statusCode=400;
-      return res.json({message:"Email and password not match",data:null})
-    }
-    token = jwt.sign({ _id: user._id,email }, "secretKey",{expiresIn:3600});
-    res.status(200);
-    return res.json({message:"success",data:user,token});
-  }
-  catch(err){
-    return res.json({message:err.message,data:null});
-  }
-});
-
-router.post('/register',async (req, res, next)=> {
-  try{
-    let {email,name,password}= req.body;
-    const user= await Users.findOne({email});
-
-    if(user){
-      res.statusCode=409;
-      return res.json({message:"User already exists",data:null});
-    }
-    else{
-      const newUser = new Users({name,email,password})
-      const data = await newUser.save();
-      res.statusCode= 200;
-      return res.json({message:"Success! User added!",data});
-    }
-  }
-  catch(err){
-    return res.json({message:err.message,data:null});
-  }
-});
+router.post("/register", register);
 
 module.exports = router;
