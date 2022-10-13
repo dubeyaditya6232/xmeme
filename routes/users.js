@@ -17,7 +17,8 @@ router.post('/login',async (req, res, next)=> {
       return res.json({message:"User not Found",data:null});
     }
 
-    if(user.password!==password){
+    const matched = await bcrypt.compare(password, user.password);
+    if(!matched){
       res.statusCode=400;
       return res.json({message:"Email and password not match",data:null})
     }
