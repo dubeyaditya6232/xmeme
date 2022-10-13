@@ -4,23 +4,18 @@ var memes = require("../model/meme");
 const authenticate = require("../middleware/authenticate");
 
 var d = [];
-router.get("/", authenticate.verifyUser, (req, res, next) => {
+router.get("/", authenticate.verifyUser, async (req, res, next) => {
   //handles the page when /memes endpoint is called
-  memes
-    .find({})
-    .sort({ _id: -1 })
-    .limit(100)
-    .exec((err, data) => {
-      //sorting the data in descending order with limit of 100 data
-      if (err) {
-        console.log(err);
-      } else {
-        res.statusCode = 200;
-        res.render("memes", { data: data, size: data.length }); //render memes page with the memes stored in data variable
-      }
-    });
+  try {
+    const data = await memes.find({}).sort({ _id: -1 }).limit(100).exec();
+    res.statusCode = 200;
+    res.render("memes", { data: data, size: data.length });
+    // return res.status(200).json({ memes: data });
+  } catch (err) {
+    console.log(err);
+  }
 });
-router.post("/", authenticate.verifyUser, (req, res, next) => {
+router.post("/", authenticate.verifyUser, async (req, res, next) => {
   // handles the post request upon the endpoint /memes
   const { name, caption, url } = req.body;
   const newMemes = new memes({
@@ -29,91 +24,72 @@ router.post("/", authenticate.verifyUser, (req, res, next) => {
     caption,
     url,
   });
-  memes
-    .findOne(req.body) //checking for duplicates
-    .then(
-      (data) => {
-        if (data !== null) {
-          // duplicate meme exists
-          err = new Error("This Meme Already Exists!, Try new "); // creating an error.
-          err.status = 409;
-          return next(err);
+  try {
+    const duplicate = await memes.findOne(req.body);
+    if (duplicate) {
+      return res.status(409).json({ message: "This meme already exists" });
+    } else {
+      newMemes.save((err, data) => {
+        // saving the newly created meme in database
+        if (err) {
+          console.log(err);
         } else {
-          newMemes.save((err, data) => {
-            // saving the newly created meme in database
-            if (err) {
-              console.log(err);
-            } else {
-              res.statusCode = 200;
-              res.redirect("/memes");
-              //   return res.json({
-              //     message: "successfully created meme",
-              //     data: data,
-              //   });
-            }
-          });
-        }
-      },
-      (err) => next(err)
-    )
-    .catch((err) => next(err));
-});
-router.get("/:memeId", authenticate.verifyUser, (req, res, next) => {
-  // handles the get request on /meme/<id> endpoint
-  memes
-    .findById(req.params.memeId) // finding meme by the ID passses in parameters
-    .then(
-      (data) => {
-        if (data !== null) {
-          // meme exists
-          d.length = 0; // empty the array d
-          d.push(data); // adding the meme in array d
           res.statusCode = 200;
-          res.render("display", { data: d, size: 1 }); // passing the array to frontend
-          //   return res.json({ message: "meme found", data: data });
-        } else {
-          err = new Error(" Not Found"); // creating an error.
-          err.status = 404;
-          return next(err);
+          res.redirect("/memes");
+          // return res.json({
+          //   message: "successfully created meme",
+          //   data: data,
+          // });
         }
-      },
-      (err) => next(err)
-    )
-    .catch((err) => next(err));
+      });
+    }
+  } catch (err) {
+    return next(err);
+  }
 });
-router.patch("/:memeId", authenticate.verifyUser, (req, res, next) => {
+router.get("/:memeId", authenticate.verifyUser, async (req, res, next) => {
+  // handles the get request on /meme/<id> endpoint
+  try {
+    const data = await memes.findById(req.params.memeId);
+    if (data) {
+      // meme exists
+      d.length = 0; // empty the array d
+      d.push(data); // adding the meme in array d
+      res.statusCode = 200;
+      res.render("display", { data: d, size: 1 }); // passing the array to frontend
+      // return res.json({ message: "meme found", data: data });
+    } else {
+      return res.status(404).json({ message: "Meme not found" });
+    }
+  } catch (err) {
+    return next(err);
+  }
+});
+router.patch("/:memeId", authenticate.verifyUser, async (req, res, next) => {
   //handles the PATCH request on the endpoint /memes/<id>
   const { caption, url } = req.body;
-  memes.findByIdAndUpdate(
-    req.params.memeId,
-    { $set: { caption, url } },
-    (err, updatedData) => {
-      // find the meme by its unique ID and updates it
-      if (err) {
-        console.log(err); // displays any error in console that might have crept while updating
-      } else {
-        res.statusCode = 200;
-        res.redirect("/memes");
-      }
-    }
-  );
+  try {
+    await memes.findByIdAndUpdate(req.params.memeId, {
+      $set: { caption, url },
+    });
+    res.statusCode = 200;
+    res.redirect("/memes");
+  } catch (err) {
+    console.log(err);
+  }
 });
-router.delete("/:memeId", authenticate.verifyUser, (req, res, next) => {
+router.delete("/:memeId", authenticate.verifyUser, async (req, res, next) => {
   //handles the DELETE request on the endpoint /memes/<id>
-
-  memes.findByIdAndDelete(req.params.memeId, (err, deletedDoc) => {
-    // find the meme by its unique ID and delete it
-    if (err) {
-      console.log(err); // displays any error in console that might have crept while updating
+  try {
+    const deletedDoc = await memes.findByIdAndDelete(req.params.memeId);
+    if (deletedDoc) {
+      res.statusCode = 200;
+      res.redirect("/memes");
     } else {
-      if (deletedDoc) {
-        res.statusCode = 200;
-        res.redirect("/memes");
-        // return res.json({ message: "Deleted meme", data: deletedDoc });
-      } else {
-        return res.status(404).json({ message: "Meme doesn't exist" });
-      }
+      return res.status(404).json({ message: "Meme doesn't exist" });
     }
-  });
+  } catch (err) {
+    console.log(err);
+  }
 });
 module.exports = router;
