@@ -4,7 +4,7 @@ var memes = require("../model/meme");
 const authenticate = require("../middleware/authenticate");
 const jwt = require("jsonwebtoken");
 const Users = require("../model/users");
-
+const bcrypt = require("bcrypt");
 var d = [];
 
 exports.homepage = (req, res, next) => {
@@ -116,16 +116,20 @@ exports.login = async (req, res, next) => {
       res.statusCode = 404;
       return res.json({ message: "User not Found", data: null });
     }
-
-    if (user.password !== password) {
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+    if (validPassword) {
+      token = jwt.sign({ _id: user._id, email }, "secretKey", {
+        expiresIn: 3600,
+      });
+      res.status(200);
+      return res.json({ message: "success", data: user, token });
+    } else {
       res.statusCode = 400;
       return res.json({ message: "Email and password not match", data: null });
     }
-    token = jwt.sign({ _id: user._id, email }, "secretKey", {
-      expiresIn: 3600,
-    });
-    res.status(200);
-    return res.json({ message: "success", data: user, token });
   } catch (err) {
     return res.json({ message: err.message, data: null });
   }
@@ -141,6 +145,8 @@ exports.register = async (req, res, next) => {
       return res.json({ message: "User already exists", data: null });
     } else {
       const newUser = new Users({ name, email, password });
+      const salt = await bcrypt.genSalt(10);
+      newUser.password = await bcrypt.hash(newUser.password, salt);
       const data = await newUser.save();
       res.statusCode = 200;
       return res.json({ message: "Success! User added!", data });
