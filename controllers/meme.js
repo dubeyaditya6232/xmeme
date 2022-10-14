@@ -27,7 +27,6 @@ exports.postMeme = async (req, res, next) => {
     name,
     caption,
     url,
-    counter: 0
   });
   try {
     const duplicate = await memes.findOne(req.body);
@@ -78,7 +77,6 @@ exports.patchMemeById = async (req, res, next) => {
   try {
     await memes.findByIdAndUpdate(req.params.memeId, {
       $set: { caption, url },
-      $inc: { counter: 1 }
     });
     res.statusCode = 200;
     res.redirect("/memes");
