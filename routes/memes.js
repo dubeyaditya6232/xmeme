@@ -8,7 +8,7 @@ const {
   getMemeById,
   patchMemeById,
   deleteMemeById,
-} = require("../controllers/routes");
+} = require("../controllers/meme.js");
 var d = [];
 router.get("/", authenticate.verifyUser, getMemes);
 router.post("/", authenticate.verifyUser, postMeme);
