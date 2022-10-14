@@ -54,13 +54,3 @@ exports.register = async (req, res, next) => {
     return res.json({ message: err.message, data: null });
   }
 };
-
-exports.getProfile = async (req, res, next) => {
-  try {
-    const data = await Users.findById({ _id: req.params.id });
-    res.statusCode = 200;
-    res.json({ msg: "Success", data });
-  } catch (err) {
-    console.log(err);
-  }
-};
