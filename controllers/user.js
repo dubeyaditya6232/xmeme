@@ -64,3 +64,16 @@ exports.getProfile = async (req, res, next) => {
     console.log(err);
   }
 };
+
+exports.updateProfile = async (req, res, next) => {
+  const { name } = req.body;
+  try {
+    await memes.findByIdAndUpdate(req.params.id, {
+      $set: { name },
+    });
+    res.statusCode = 200;
+    res.json({ msg: "Success" })
+  } catch (err) {
+    console.log(err);
+  }
+};
